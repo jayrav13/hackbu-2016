@@ -20,6 +20,6 @@ class Events extends Model
 	}
 
 	public function attendees() {
-		return $this->belongsToMany('App\User', 'user_events', 'event_id', 'user_id');
+		return $this->belongsToMany('App\User', 'user_events', 'event_id', 'user_id')->withPivot('has_checked_in');
 	}
 }

@@ -35,7 +35,7 @@ class EventsController extends Controller
 		$event = new Events;
 		$event->fill(Input::all());
 		$user->events()->save($event);
-		$user_event = App\UserEvent::create([
+		$user_event = UserEvents::create([
 			"user_id" => $user->id,
 			"event_id" => $event->id,
 			"has_checked_in" => 1
@@ -92,7 +92,8 @@ class EventsController extends Controller
 		$user_event->save();
 		return Response::json([
 			"status" => "OK",
-			"response" => "User has been checked in!"
+			"response" => "User has been checked in!",
+			"user" => $user
 		], 200);
 	}
 	public function eventAttendees(Request $request, $event_id) {
@@ -138,5 +139,13 @@ class EventsController extends Controller
 		], 200);
 
 	}
+
+	public function eventDetails(Request $request, $event_id) {
+		return Response::json([
+			"status" => "OK",
+			"response" => Events::with('attendees')->where('id', $event_id)->first()
+		], 200);
+	}
+
 
 }

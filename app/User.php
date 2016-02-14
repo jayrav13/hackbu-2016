@@ -29,6 +29,6 @@ class User extends Authenticatable
 	}
 
 	public function registered() {
-		return $this->belongsToMany('App\Events', 'user_events', 'user_id', 'event_id');
+		return $this->belongsToMany('App\Events', 'user_events', 'user_id', 'event_id')->withPivot('has_checked_in');
 	}
 }

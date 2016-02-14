@@ -44,10 +44,11 @@ Route::group(['prefix' => 'api'], function() {
 			Route::get('list', "EventsController@listEvents");
 			Route::post('create', "EventsController@createEvent");
 			Route::post('register/{event_id}', "EventsController@registerForEvent");
-			Route::patch('checkin/{event_id}', "EventsController@checkinUser");
+			Route::put('checkin/{event_id}', "EventsController@checkinUser");
 			Route::post('attendees/{event_id}', "EventsController@eventAttendees");
 			Route::post('deregister/{event_id}', "EventsController@deregisterUser");
 			Route::delete('delete/{event_id}', "EventsController@deleteEvent");
+			Route::post('{event_id}/details', "EventsController@eventDetails");
 
 		});
 
