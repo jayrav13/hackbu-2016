@@ -24,8 +24,8 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-	public function admin() {
-		return $this->hasMany('App\Events');
+	public function events() {
+		return $this->hasMany('App\Events', 'user_id', 'id');
 	}
 
 	public function registered() {

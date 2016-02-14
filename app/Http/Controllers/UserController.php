@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 
 use Response;
 use App\User;
+use App\Events;
 
 class UserController extends Controller
 {
@@ -78,10 +79,28 @@ class UserController extends Controller
     }
 
 	public function userEvents(Request $request) {
+		$user = User::where('remember_token', $request->token)->first();
+		$events = Events::all();
+
+		$user_events = [];
+
+		foreach($user->registered as $event) {
+			array_push($user_events, $event->id);
+		}
+
+		$output = [];
+
+		foreach($events as $event) {
+			if(!in_array($event->id, $user_events)) {
+				array_push($output, $event);
+			}
+		}
+
 		return Response::json([
 			"status" => "OK",
-			"response" => User::where('remember_token', $request->token)->with('registered')->with('admin')->first()
-		]);
+			"response" => User::where('remember_token', $request->token)->with('registered')->with('events')->first(),
+			"not_registered" => $output
+		], 200);
 	
 	}
 

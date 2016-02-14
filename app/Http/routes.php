@@ -41,6 +41,7 @@ Route::group(['prefix' => 'api'], function() {
 			Route::post('create', "EventsController@createEvent");
 			Route::post('register/{event_id}', "EventsController@registerForEvent");
 			Route::patch('checkin/{event_id}', "EventsController@checkinUser");
+			Route::post('attendees/{event_id}', "EventsController@eventAttendees");
 
 		});
 

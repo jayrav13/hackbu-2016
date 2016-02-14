@@ -19,7 +19,8 @@ class EventsController extends Controller
 	public function listEvents(Request $request) {
 		return Response::json([
 			"status" => "OK",
-			"response" => Events::all()
+			"response" => Events::with('admin')->with('attendees')->get(),
+			"user" => User::where('remember_token', $request->token)->first()
 		], 200);
 	}
 
@@ -84,4 +85,11 @@ class EventsController extends Controller
 			"response" => "User has been checked in!"
 		], 200);
 	}
+	public function eventAttendees(Request $request, $event_id) {
+		return Response::json([
+			"status" => "OK",
+			"response" => Events::where('id', $event_id)->with('attendees')->first()
+		], 200);
+	}
+
 }

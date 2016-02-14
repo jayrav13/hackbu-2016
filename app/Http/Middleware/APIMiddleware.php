@@ -17,8 +17,6 @@ class APIMiddleware
      */
     public function handle($request, Closure $next)
     {
-		header('Access-Control-Allow-Origin: *');
-
         if(!$request->token) {
             return Response::json([
                 "status" => "NOT_OK",
@@ -35,6 +33,8 @@ class APIMiddleware
             ], 404);
         }
 
-        return $next($request)->header('Access-Control-Allow-Origin', '*');
-    }
+		$response = $next($request);
+		$response->headers->set('Access-Control-Allow-Origin', '*');
+		return $response;
+	}
 }

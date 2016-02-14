@@ -16,10 +16,10 @@ class Events extends Model
 	];
 
 	public function admin() {
-		return $this->hasOne('App\User');
+		return $this->hasOne('App\User', 'id', 'user_id');
 	}
 
 	public function attendees() {
-		return $this->hasMany('App\User', 'user_events', 'event_id', 'user_id');
+		return $this->belongsToMany('App\User', 'user_events', 'event_id', 'user_id');
 	}
 }
