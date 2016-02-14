@@ -29,12 +29,18 @@ Route::group(['prefix' => 'api'], function() {
     // Everything else, protected
     Route::group(['middleware' => ['hackbu']], function() {
 
+		Route::group(['prefix' => 'user'], function() {
+
+			Route::post('events', "UserController@userEvents");
+
+		});
+
 		Route::group(['prefix' => 'events'], function() {
 
 			Route::get('list', "EventsController@listEvents");
 			Route::post('create', "EventsController@createEvent");
-			Route::post('register', "EventsController@registerForEvent");
-			Route::patch('checkin', "EventsController@checkinUser");
+			Route::post('register/{event_id}', "EventsController@registerForEvent");
+			Route::patch('checkin/{event_id}', "EventsController@checkinUser");
 
 		});
 

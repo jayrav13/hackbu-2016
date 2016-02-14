@@ -36,15 +36,15 @@ class EventsController extends Controller
 		$user->admin()->save($event);
 	}
 
-	public function registerForEvent(Request $request) {
-		if(!$request->event_id) {
+	public function registerForEvent(Request $request, $event_id) {
+		if(!$event_id) {
 			return Response::json([
 				"status" => "NOT_OK",
-				"response" => "Fields required: \"event_id\""
+				"response" => "Routes required: \"event_id\""
 			]);
 		}
 	
-		$event = Events::where('id', $request->event_id)->first();
+		$event = Events::where('id', $event_id)->first();
 		if(!$event) {
 			return Response::json([
 				"status" => "NOT_OK",
@@ -62,6 +62,26 @@ class EventsController extends Controller
 		], 200);
 	}
 
-	
-
+	public function checkinUser(Request $request, $event_id) {
+		if(!$event_id || !$request->rider_token) {
+			return Response::json([
+				"status" => "NOT_OK",
+				"response" => "Fields required: \"event_id\", \"rider_token\""
+			], 404);
+		}
+		$user = User::where('remember_token', $request->rider_token)->first();
+		$user_event = UserEvents::where('user_id', $user->id)->where('event_id', $event_id)->first();
+		if(!$user_event) {
+			return Response::json([
+				"status" => "NOT_OK",
+				"response" => "User is not registered for this event."
+			], 400);
+		}
+		$user_event->has_checked_in = 1;
+		$user_event->save();
+		return Response::json([
+			"status" => "OK",
+			"response" => "User has been checked in!"
+		], 200);
+	}
 }

@@ -47,7 +47,7 @@ class UserController extends Controller
                 "status" => "OK",
                 "response" => $user,
                 "token" => $user->remember_token
-            ], 200);
+            ], 200)->header('Access-Control-Allow-Origin', '*');
         }
     }
 
@@ -74,6 +74,15 @@ class UserController extends Controller
             "status" => "OK",
             "response" => $user,
             "token" => $user->remember_token
-        ], 200);
+        ], 200)->header('Access-Control-Allow-Origin', '*');
     }
+
+	public function userEvents(Request $request) {
+		return Response::json([
+			"status" => "OK",
+			"response" => User::where('remember_token', $request->token)->with('registered')->with('admin')->first()
+		]);
+	
+	}
+
 }
