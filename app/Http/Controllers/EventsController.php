@@ -34,7 +34,17 @@ class EventsController extends Controller
 		$user = User::where('remember_token', $request->token)->first();
 		$event = new Events;
 		$event->fill(Input::all());
-		$user->admin()->save($event);
+		$user->events()->save($event);
+		$user_event = App\UserEvent::create([
+			"user_id" => $user->id,
+			"event_id" => $event->id,
+			"has_checked_in" => 1
+		]);
+		return Response::json([
+			"status" => "OK",
+			"response" => $event,
+			"user" => $user
+		], 200)->header('Access-Control-Allowed-Origin', '*');
 	}
 
 	public function registerForEvent(Request $request, $event_id) {
@@ -90,6 +100,43 @@ class EventsController extends Controller
 			"status" => "OK",
 			"response" => Events::where('id', $event_id)->with('attendees')->first()
 		], 200);
+	}
+
+	public function deregisterUser(Request $request, $event_id) {
+		$user = User::where('remember_token', $request->token)->first();
+		$user_event = UserEvents::where('user_id', $user->id)->where('event_id', $event_id)->first();
+		if($user_event) {
+			$user_event->delete();
+			return Response::json([
+				"status" => "OK",
+				"response" => "Deregistered from this event!"
+			], 200);
+		}
+		else {
+			return Response::json([
+				"status" => "NOT_OK",
+				"response" => "You were not registered for this event."
+			], 400);
+		}
+	}
+
+	public function deleteEvent(Request $request, $event_id) {
+		$event = Events::find($event_id);
+		$user = User::where('remember_token', $request->token)->first();
+		if($event->admin->id != $user->id) {
+			return Response::json([
+				"status" => "NOT_OK",
+				"response" => "Event can only be deleted by event creator"
+			], 400);
+		}
+
+		// $event->delete();
+
+		return Response::json([
+			"status" => "OK",
+			"response" => "Event deleted!"
+		], 200);
+
 	}
 
 }

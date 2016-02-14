@@ -20,6 +20,10 @@ Route::group(['prefix' => 'api'], function() {
     // Simple heartbeat
     Route::get('heartbeat', "DefaultController@getHeartbeat");
 
+	Route::get('data', function() {
+		return App\User::with('events')->with('registered')->get();
+	});
+
     // Login / register, unprotected
     Route::group(['prefix' => 'user'], function() {
         Route::post('create', "UserController@createUser");
@@ -42,6 +46,8 @@ Route::group(['prefix' => 'api'], function() {
 			Route::post('register/{event_id}', "EventsController@registerForEvent");
 			Route::patch('checkin/{event_id}', "EventsController@checkinUser");
 			Route::post('attendees/{event_id}', "EventsController@eventAttendees");
+			Route::post('deregister/{event_id}', "EventsController@deregisterUser");
+			Route::delete('delete/{event_id}', "EventsController@deleteEvent");
 
 		});
 

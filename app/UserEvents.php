@@ -9,7 +9,7 @@ class UserEvents extends Model
     //
 	protected $table = 'user_events';
 	protected $fillable = [
-		'user_id', 'event_id'
+		'user_id', 'event_id', "has_checked_in"
 	];
 	
 }
